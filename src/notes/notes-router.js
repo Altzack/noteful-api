@@ -9,7 +9,7 @@ const serializeNote = (note) => ({
   id: note.id,
   title: note.title,
   modified: note.modified,
-  folderId: note.folderId,
+  folderid: note.folderid,
   content: note.content,
 });
 
@@ -65,20 +65,20 @@ notesRouter
       id: res.note.id,
       title: res.note.title,
       modified: res.note.modified,
-      folderId: res.note.folderId,
+      folderid: res.note.folderid,
       content: res.note.content,
     });
   })
   .patch(jsonParser, (req, res, next) => {
-    const { title, modified, folderId, content } = req.body;
-    const noteToUpdate = { title, modified, folderId, content };
+    const { title, modified, folderid, content } = req.body;
+    const noteToUpdate = { title, modified, folderid, content };
 
     const numberOfValues = Object.values(noteToUpdate).filter(Boolean).length;
 
     if (numberOfValues === 0) {
       return res.status(400).json({
         error: {
-          message: `Request body must contain 'title','modified','folderId','content'`,
+          message: `Request body must contain 'title','modified','folderid','content'`,
         },
       });
     }

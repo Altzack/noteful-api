@@ -43,10 +43,10 @@ folderRouter
   });
 
 folderRouter
-  .route("/:folderId")
+  .route("/:folderid")
   .all((req, res, next) => {
-    const { folderId } = req.params;
-    FoldersService.getById(req.app.get("db"), folderId)
+    const { folderid } = req.params;
+    FoldersService.getById(req.app.get("db"), folderid)
       .then((folder) => {
         if (!folder) {
           return res.status(404).json({
@@ -79,7 +79,7 @@ folderRouter
     }
     FoldersService.updateFolder(
       req.app.get("db"),
-      req.params.folderId,
+      req.params.folderid,
       folderToUpdate
     )
       .then((numRowsAffected) => {
@@ -88,7 +88,7 @@ folderRouter
       .catch(next);
   })
   .delete((req, res, next) => {
-    FoldersService.deleteFolder(req.app.get("db"), req.params.folderId)
+    FoldersService.deleteFolder(req.app.get("db"), req.params.folderid)
       .then(() => {
         res.status(204).end();
       })
