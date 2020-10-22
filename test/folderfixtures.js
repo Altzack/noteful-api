@@ -2,15 +2,15 @@ function makeFolderArray() {
   return [
     {
       id: 1,
-      title: "Important",
+      name: "Important",
     },
     {
       id: 2,
-      title: "Super",
+      name: "Super",
     },
     {
       id: 3,
-      title: "Creepy",
+      name: "Creepy",
     },
   ];
 }

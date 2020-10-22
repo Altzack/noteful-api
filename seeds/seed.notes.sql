@@ -1,4 +1,4 @@
-INSERT INTO notes(title, folderid, content)
+INSERT INTO notes(name, folderid, content)
 VALUES (
         'Dogs',
         1,

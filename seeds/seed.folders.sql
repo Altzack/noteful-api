@@ -1,5 +1,4 @@
-INSERT INTO folders (title)
-VALUES
-  ('Important'),
+INSERT INTO folders (name)
+VALUES ('Important'),
   ('Super'),
   ('Creepy');
