@@ -11,9 +11,9 @@ const app = express();
 
 const morganOption = NODE_ENV === "production" ? "tiny" : "common";
 
+app.use(cors());
 app.use(morgan(morganOption));
 app.use(helmet());
-app.use(cors());
 app.use("/api/folders", folderRouter);
 app.use("/api/notes", notesRouter);
 
