@@ -46,10 +46,10 @@ notesRouter
   });
 
 notesRouter
-  .route("/:note_id")
+  .route("/:noteId")
   .all((req, res, next) => {
-    const { note_id } = req.params;
-    NotesService.getById(req.app.get("db"), note_id)
+    const { noteId } = req.params;
+    NotesService.getById(req.app.get("db"), noteId)
       .then((note) => {
         if (!note) {
           return res.status(404).json({
@@ -84,14 +84,14 @@ notesRouter
       });
     }
 
-    NotesService.updateNote(req.app.get("db"), req.params.note_id, noteToUpdate)
+    NotesService.updateNote(req.app.get("db"), req.params.noteId, noteToUpdate)
       .then((numRowsAffected) => {
         res.status(204).end();
       })
       .catch(next);
   })
   .delete((req, res, next) => {
-    NotesService.deleteNote(req.app.get("db"), req.params.note_id)
+    NotesService.deleteNote(req.app.get("db"), req.params.noteId)
       .then(() => {
         res.status(204).end();
       })
