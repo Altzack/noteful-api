@@ -7,7 +7,7 @@ const jsonParser = express.json();
 
 const serializeNote = (note) => ({
   id: note.id,
-  name: note.name,
+  title: note.title,
   modified: note.modified,
   folderId: note.folderId,
   content: note.content,
@@ -23,8 +23,8 @@ notesRouter
       .catch(next);
   })
   .post(jsonParser, (req, res, next) => {
-    const { name, modified, folderId, content } = req.body;
-    const newNote = { name, folderId, content };
+    const { title, modified, folderId, content } = req.body;
+    const newNote = { title, folderId, content };
 
     for (const [key, value] of Object.entries(newNote)) {
       if (value == null) {
@@ -64,22 +64,22 @@ notesRouter
   .get((req, res, next) => {
     res.json({
       id: res.note.id,
-      name: res.note.name,
+      title: res.note.title,
       modified: res.note.modified,
       folderId: res.note.folderId,
       content: res.note.content,
     });
   })
   .patch(jsonParser, (req, res, next) => {
-    const { name, modified, folderId, content } = req.body;
-    const noteToUpdate = { name, modified, folderId, content };
+    const { title, modified, folderId, content } = req.body;
+    const noteToUpdate = { title, modified, folderId, content };
 
     const numberOfValues = Object.values(noteToUpdate).filter(Boolean).length;
 
     if (numberOfValues === 0) {
       return res.status(400).json({
         error: {
-          message: `Request body must contain 'name','modified','folderId','content'`,
+          message: `Request body must contain 'title','modified','folderId','content'`,
         },
       });
     }
