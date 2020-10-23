@@ -1,24 +1,27 @@
-const express = require("express");
-const FoldersService = require("./folders-service");
 const path = require("path");
+const express = require("express");
+const xss = require("xss");
+const FoldersService = require("./folders-service");
 
-const folderRouter = express.Router();
+const foldersRouter = express.Router();
 const jsonParser = express.json();
 
 const serializeFolder = (folder) => ({
   id: folder.id,
-  title: folder.title,
+  title: xss(folder.title),
 });
 
-folderRouter
+foldersRouter
   .route("/")
   .get((req, res, next) => {
-    FoldersService.getAllFolders(req.app.get("db"))
+    const knexInstance = req.app.get("db");
+    FoldersService.getAllFolders(knexInstance)
       .then((folders) => {
-        res.json(folders.map(serializeFolder));
+        res.json(folders);
       })
-      .catch(next);
+      .catch((error) => res.status(500).json(arguments));
   })
+
   .post(jsonParser, (req, res, next) => {
     const { title } = req.body;
     const newFolder = { title };
@@ -31,7 +34,6 @@ folderRouter
       }
     }
 
-    newFolder.title = title;
     FoldersService.insertFolder(req.app.get("db"), newFolder)
       .then((folder) => {
         res
@@ -42,57 +44,52 @@ folderRouter
       .catch(next);
   });
 
-folderRouter
-  .route("/:folderid")
+foldersRouter
+  .route("/:folder_id")
   .all((req, res, next) => {
-    const { folderid } = req.params;
-    FoldersService.getById(req.app.get("db"), folderid)
+    FoldersService.getFolderById(req.app.get("db"), req.params.folder_id)
       .then((folder) => {
         if (!folder) {
           return res.status(404).json({
-            error: { message: `Folder Not Found` },
+            error: { message: `Folder doesn't exist` },
           });
         }
-        res.folder = folder;
+        res.folder = folder; // save the folder for the next middleware
         next();
       })
       .catch(next);
   })
   .get((req, res, next) => {
-    res.json({
-      id: res.folder.id,
-      title: res.folder.title,
-    });
+    res.json(serializeFolder(res.folder));
+  })
+  .delete((req, res, next) => {
+    FoldersService.deleteFolder(req.app.get("db"), req.params.folderid)
+      .then((numRowsAffected) => {
+        res.status(204).end();
+      })
+      .catch(next);
   })
   .patch(jsonParser, (req, res, next) => {
-    const { title } = req.body;
-    const folderToUpdate = { title };
+    const { title, folderid } = req.body;
+    const folderToUpdate = { title, folderid };
 
     const numberOfValues = Object.values(folderToUpdate).filter(Boolean).length;
-
-    if (numberOfValues === 0) {
+    if (numberOfValues === 0)
       return res.status(400).json({
         error: {
-          message: `Request body must contain 'title'`,
+          message: `Request body must content either 'title' or 'folderid'`,
         },
       });
-    }
+
     FoldersService.updateFolder(
       req.app.get("db"),
-      req.params.folderid,
+      req.params.folder_id,
       folderToUpdate
     )
       .then((numRowsAffected) => {
         res.status(204).end();
       })
       .catch(next);
-  })
-  .delete((req, res, next) => {
-    FoldersService.deleteFolder(req.app.get("db"), req.params.folderid)
-      .then(() => {
-        res.status(204).end();
-      })
-      .catch(next);
   });
 
-module.exports = folderRouter;
+module.exports = foldersRouter;
