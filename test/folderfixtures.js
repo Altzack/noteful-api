@@ -1,20 +1,20 @@
 function makeFolderArray() {
-  return [
-    {
-      id: 1,
-      name: "Important",
-    },
-    {
-      id: 2,
-      name: "Super",
-    },
-    {
-      id: 3,
-      name: "Creepy",
-    },
-  ];
-}
+    return [
+        {
+          id: 1,
+          title: 'Important',
+        },
+        {
+          id: 2,
+          title: 'Super',
+        },
+        {
+          id: 3,
+          title: 'Creepy',
+        },
+      ]
+    }
 
-module.exports = {
-  makeFolderArray,
-};
+    module.exports = {
+        makeFolderArray,
+    }
